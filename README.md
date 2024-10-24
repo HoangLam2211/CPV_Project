@@ -52,5 +52,5 @@ Before using the project, ensure that Python 3.x and the necessary libraries are
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/your-repository/real-time-image-stitching.git
+   git clone https://github.com/HoangLam2211/CPV_Project
    cd real-time-image-stitching
