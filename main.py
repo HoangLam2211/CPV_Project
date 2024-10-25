@@ -264,3 +264,92 @@ def building():
     cv2.imshow('ddd', panorama)  # Hiển thị ảnh kết quả
     cv2.waitKey(0)
     cv2.destroyAllWindows()  # Đóng cửa sổ hiển thị
+
+def city():
+    
+    FRAME_WIDTH = 1000  # Chiều rộng ảnh
+    FRAME_HEIGHT = 500  # Chiều cao ảnh
+
+    # Danh sách các file ảnh
+    city_files = [
+        "input_image\\city\\002.jpg",
+        "input_image\\city\\003.jpg",
+        "input_image\\city\\004.jpg",
+        "input_image\\city\\005.jpg",
+        "input_image\\city\\006.jpg",
+        "input_image\\city\\007.jpg",
+        "input_image\\city\\008.jpg",
+    ]
+
+    # Đọc và thay đổi kích thước ảnh
+    city = [cv2.resize(cv2.imread(f), (FRAME_WIDTH, FRAME_HEIGHT)) for f in city_files]
+
+    # Thông số để cắt ảnh
+    crop_x_min = 50 # Tọa độ x bắt đầu của vùng cắt.
+    crop_x_max = 5000 # Tọa độ x kết thúc của vùng cắt.
+    crop_y_min = 50 # Tọa độ y bắt đầu của vùng cắt.
+    crop_y_max = 1200 # Tọa độ y kết thúc của vùng cắt.
+
+    # Khởi tạo đối tượng Stitcher và thực hiện ghép ảnh
+    s = Stitcher(
+        len(city_files),
+        crop_x_min=crop_x_min,
+        crop_x_max=crop_x_max,
+        crop_y_min=crop_y_min,
+        crop_y_max=crop_y_max,
+    )
+
+    panorama = s.stitch(city)  # Ghép ảnh
+
+    cv2.imwrite("panorama3.png", panorama)  # Lưu ảnh kết quả
+    cv2.imshow('ddd', panorama)  # Hiển thị ảnh kết quả
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()  # Đóng cửa sổ hiển thị
+
+def street():
+    
+    # Inside the mountain() function
+    street_files = [
+        "input_image\\street\\001.jpg",
+        "input_image\\street\\002.jpg",
+        "input_image\\street\\003.jpg",
+        "input_image\\street\\004.jpg",
+        "input_image\\street\\005.jpg",
+    ]
+
+    # Set a consistent width and height
+    FRAME_WIDTH = 900
+    FRAME_HEIGHT = 600
+
+    # Resize all images to the same size
+    street = [cv2.resize(cv2.imread(f), (FRAME_WIDTH, FRAME_HEIGHT)) for f in street_files]
+
+    # Thông số để cắt ảnh
+    crop_x_min = 50 # Tọa độ x bắt đầu của vùng cắt.
+    crop_x_max = 5000 # Tọa độ x kết thúc của vùng cắt.
+    crop_y_min = 50 # Tọa độ y bắt đầu của vùng cắt.
+    crop_y_max = 1200 # Tọa độ y kết thúc của vùng cắt.
+
+    # Khởi tạo đối tượng Stitcher và thực hiện ghép ảnh
+    s = Stitcher(
+        len(street_files),
+        crop_x_min=crop_x_min,
+        crop_x_max=crop_x_max,
+        crop_y_min=crop_y_min,
+        crop_y_max=crop_y_max,
+    )
+
+    panorama = s.stitch(street)  # Ghép ảnh
+
+    cv2.imwrite("panorama4.png", panorama)  # Lưu ảnh kết quả
+    cv2.imshow('ddd', panorama)  # Hiển thị ảnh kết quả
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()  # Đóng cửa sổ hiển thị
+
+
+
+if __name__ == "__main__":
+    shanghai()
+    building()
+    city()
+    street()
