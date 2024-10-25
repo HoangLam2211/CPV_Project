@@ -186,3 +186,81 @@ class Stitcher:
         # Chỉ giữ phần ảnh bên phải
         background[only_right] = foreground[only_right]
         return background
+
+def shanghai():
+    
+    FRAME_WIDTH = 768  # Chiều rộng ảnh
+    FRAME_HEIGHT = 432  # Chiều cao ảnh
+
+    # Danh sách các file ảnh
+    shanghai_files = [
+        "images/shanghai-01.png",
+        "images/shanghai-02.png",
+        "images/shanghai-03.png",
+        "images/shanghai-04.png",
+        "images/shanghai-05.png",
+    ]
+
+    # Đọc và thay đổi kích thước ảnh
+    shanghai = [cv2.resize(cv2.imread(f), (FRAME_WIDTH, FRAME_HEIGHT)) for f in shanghai_files]
+
+    # Thông số để cắt ảnh
+    crop_x_min = 30 # Tọa độ x bắt đầu của vùng cắt.
+    crop_x_max = 1764 # Tọa độ x kết thúc của vùng cắt.
+    crop_y_min = 37 # Tọa độ y bắt đầu của vùng cắt.
+    crop_y_max = 471 # Tọa độ y kết thúc của vùng cắt.
+
+    # Khởi tạo đối tượng Stitcher và thực hiện ghép ảnh
+    s = Stitcher(
+        len(shanghai_files),
+        crop_x_min=crop_x_min,
+        crop_x_max=crop_x_max,
+        crop_y_min=crop_y_min,
+        crop_y_max=crop_y_max,
+    )
+
+    panorama = s.stitch(shanghai)  # Ghép ảnh
+
+    cv2.imwrite("panorama1.png", panorama)  # Lưu ảnh kết quả
+    cv2.imshow('ddd', panorama)  # Hiển thị ảnh kết quả
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()  # Đóng cửa sổ hiển thị
+
+def building():
+    
+    FRAME_WIDTH = 1000  # Chiều rộng ảnh
+    FRAME_HEIGHT = 500  # Chiều cao ảnh
+
+    # Danh sách các file ảnh
+    building_files = [
+        "input_image\\building\\building1.jpg",
+        "input_image\\building\\building2.jpg",
+        "input_image\\building\\building3.jpg",
+        "input_image\\building\\building4.jpg",
+        "input_image\\building\\building5.jpg",
+    ]
+
+    # Đọc và thay đổi kích thước ảnh
+    building = [cv2.resize(cv2.imread(f), (FRAME_WIDTH, FRAME_HEIGHT)) for f in building_files]
+
+    # Thông số để cắt ảnh
+    crop_x_min = 30 # Tọa độ x bắt đầu của vùng cắt.
+    crop_x_max = 2500 # Tọa độ x kết thúc của vùng cắt.
+    crop_y_min = 37 # Tọa độ y bắt đầu của vùng cắt.
+    crop_y_max = 1000 # Tọa độ y kết thúc của vùng cắt.
+
+    # Khởi tạo đối tượng Stitcher và thực hiện ghép ảnh
+    s = Stitcher(
+        len(building_files),
+        crop_x_min=crop_x_min,
+        crop_x_max=crop_x_max,
+        crop_y_min=crop_y_min,
+        crop_y_max=crop_y_max,
+    )
+
+    panorama = s.stitch(building)  # Ghép ảnh
+
+    cv2.imwrite("panorama2.png", panorama)  # Lưu ảnh kết quả
+    cv2.imshow('ddd', panorama)  # Hiển thị ảnh kết quả
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()  # Đóng cửa sổ hiển thị
