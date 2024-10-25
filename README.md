@@ -32,7 +32,7 @@ This project is built using Python’s OpenCV library, utilizing advanced algori
 - **Image Matching with FLANN**: Efficiently matches features between images using FLANN, allowing for fast and robust alignment of images.
 - **Panorama Creation**: Combines images into a seamless panorama with controlled cropping and adjustment to remove any unaligned edges.
 - **Cropping Functionality**: Allows users to specify cropping dimensions to ensure the final stitched image is clean and optimized for viewing.
-- **Supports Multiple Sets of Images**: Functions for stitching different sets of images, such as "shanghai," "street," "building," and "grail" image sets.
+- **Supports Multiple Sets of Images**: Functions for stitching different sets of images, such as "shanghai," "street," "building," and "city" image sets.
 
 ## Technologies Used
 - **Python 3.x**: The main programming language used for the project.
