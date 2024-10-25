@@ -46,3 +46,24 @@ class Matcher:
         gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)  # Chuyển ảnh sang grayscale
         kp, des = self.sift.detectAndCompute(gray, None)  # Phát hiện và tính toán đặc trưng
         return {"kp": kp, "des": des}  # Trả về keypoints và descriptors
+
+# Lớp Stitcher để ghép nối các ảnh thành một panorama
+class Stitcher:
+    def __init__(
+        self,
+        number_of_images,
+        crop_x_min=None,
+        crop_x_max=None,
+        crop_y_min=None,
+        crop_y_max=None,
+    ):
+        self.matcher_obj = Matcher()  # Đối tượng Matcher để khớp đặc trưng
+        self.homography_cache = {}  # Bộ nhớ đệm cho ma trận Homography
+        self.overlay_cache = {}  # Bộ nhớ đệm cho việc chồng ảnh
+        self.count = number_of_images  # Số lượng ảnh cần ghép
+
+        # Các thông số cắt ảnh cuối cùng
+        self.crop_x_min = crop_x_min
+        self.crop_x_max = crop_x_max
+        self.crop_y_min = crop_y_min
+        self.crop_y_max = crop_y_max
