@@ -80,11 +80,12 @@ class Stitcher:
         self.right_shift()  # Ghép từ giữa sang phải
         stop = timeit.default_timer()
         duration = stop - start
-        print("stitching took %.2f seconds." % duration)  # In ra thời gian thực hiện
+        print("Hoan thanh %.2f giay." % duration)  # In ra thời gian thực hiện
 
         # Trả về ảnh kết quả đã cắt nếu có thông số crop
         if self.crop_x_min and self.crop_x_max and self.crop_y_min and self.crop_y_max:
-            return self.result[
+            return self.result
+            [
                 self.crop_y_min : self.crop_y_max, self.crop_x_min : self.crop_x_max
             ]
         else:
@@ -114,3 +115,74 @@ class Stitcher:
             homography = self.matcher_obj.match(image_1, image_2)  # Tính toán Homography
             self.homography_cache[cache_key] = homography  # Lưu vào bộ nhớ đệm
         return homography
+
+    # Hàm ghép ảnh từ giữa sang trái
+    def left_shift(self):
+        a = self.left_list[0]  # Bắt đầu với ảnh đầu tiên bên trái
+
+        # Ghép từng ảnh trong danh sách bên trái
+        for i, image in enumerate(self.left_list[1:]):
+            H = self.get_homography(a, str(i), image, str(i + 1), "left")  # Tính Homography
+
+            # Tính toán nghịch đảo ma trận Homography
+            XH = np.linalg.inv(H)
+
+            # Xác định kích thước của ảnh biến đổi
+            ds = np.dot(XH, np.array([a.shape[1], a.shape[0], 1]))
+            ds = ds / ds[-1]
+
+            # Điều chỉnh các giá trị bù trừ
+            f1 = np.dot(XH, np.array([0, 0, 1]))
+            f1 = f1 / f1[-1]
+            XH[0][-1] += abs(f1[0])
+            XH[1][-1] += abs(f1[1])
+
+            ds = np.dot(XH, np.array([a.shape[1], a.shape[0], 1]))
+            offsety = abs(int(f1[1]))
+            offsetx = abs(int(f1[0]))
+
+            # Biến đổi phối cảnh của ảnh
+            dsize = (int(ds[0]) + offsetx, int(ds[1]) + offsety)
+            tmp = cv2.warpPerspective(a, XH, dsize, borderMode=cv2.BORDER_TRANSPARENT)
+
+            # Chèn ảnh hiện tại vào ảnh ghép
+            tmp[offsety : image.shape[0] + offsety, offsetx : image.shape[1] + offsetx] = image
+
+            a = tmp  # Cập nhật ảnh ghép
+
+        self.result = tmp  # Lưu ảnh kết quả
+
+    # Hàm ghép ảnh từ giữa sang phải
+    def right_shift(self):
+        for i, imageRight in enumerate(self.right_list):
+            imageLeft = self.result  # Ảnh hiện tại bên trái
+
+            H = self.get_homography(imageLeft, str(i), imageRight, str(i + 1), "right")  # Tính Homography
+
+            # Biến đổi phối cảnh cho ảnh phải
+            result = cv2.warpPerspective(
+                imageRight,
+                H,
+                (imageLeft.shape[1] + imageRight.shape[1], imageLeft.shape[0]),
+                borderMode=cv2.BORDER_TRANSPARENT,
+            )
+
+            # Tạo mặt nạ cho ảnh trái
+            mask = np.zeros((result.shape[0], result.shape[1], 3), dtype="uint8")
+            mask[0 : imageLeft.shape[0], 0 : imageLeft.shape[1]] = imageLeft
+
+            # Ghép hai ảnh
+            self.result = self.blend_images(mask, result, str(i))
+
+    # Hàm để chồng ảnh, giữ phần ảnh bên phải
+    def blend_images(self, background, foreground, i):
+        only_right = self.overlay_cache.get(i, None)
+        if only_right is None:
+            only_right = np.nonzero(
+                (np.sum(foreground, 2) != 0) * (np.sum(background, 2) == 0)
+            )
+            self.overlay_cache[i] = only_right
+
+        # Chỉ giữ phần ảnh bên phải
+        background[only_right] = foreground[only_right]
+        return background
