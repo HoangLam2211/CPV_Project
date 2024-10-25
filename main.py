@@ -40,3 +40,9 @@ class Matcher:
             H, _ = cv2.findHomography(matched_points_current, matched_points_prev, cv2.RANSAC, 4)
             return H
         return None
+
+    # Hàm lấy đặc trưng SIFT của một ảnh
+    def get_SIFT_features(self, im):
+        gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)  # Chuyển ảnh sang grayscale
+        kp, des = self.sift.detectAndCompute(gray, None)  # Phát hiện và tính toán đặc trưng
+        return {"kp": kp, "des": des}  # Trả về keypoints và descriptors
