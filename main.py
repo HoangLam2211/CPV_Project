@@ -84,7 +84,6 @@ class Stitcher:
         self.images = images  # Danh sách ảnh
         self.prepare_lists()  # Chuẩn bị các danh sách ảnh
 
-
         # Bắt đầu đo thời gian ghép nối
         start = timeit.default_timer()
         self.left_shift()  # Ghép từ giữa sang trái
@@ -93,12 +92,10 @@ class Stitcher:
         duration = stop - start
         print("Hoan thanh %.2f giay." % duration)  # In ra thời gian thực hiện
 
-
         # Trả về ảnh kết quả đã cắt nếu có thông số crop
-        if self.crop_x_min and self.crop_x_max and self.crop_y_min and self.crop_y_max:
-            return self.result
-            [
-                self.crop_y_min : self.crop_y_max, self.crop_x_min : self.crop_x_max
+        if self.crop_x_min is not None and self.crop_x_max is not None and self.crop_y_min is not None and self.crop_y_max is not None:
+            return self.result[
+                self.crop_y_min:self.crop_y_max, self.crop_x_min:self.crop_x_max
             ]
         else:
             return self.result
