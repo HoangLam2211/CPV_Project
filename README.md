@@ -9,16 +9,16 @@ This project provides a solution for stitching multiple images together to creat
 - [Algorithms Overview](#algorithms-overview)
   - [SIFT (Scale-Invariant Feature Transform)](#sift)
   - [FLANN (Fast Library for Approximate Nearest Neighbors)](#flann)
+  - [System Overview and Architecture](#architecture)
 - [Installation](#installation)
 - [Usage](#usage)
   - [Image Folder Structure](#image-folder-structure)
   - [Running the Stitching Functions](#running-the-stitching-functions)
-- [File Structure](#file-structure)
 - [Performance Considerations](#performance-considerations)
 - [Examples](#examples)
   - [Stitching Shanghai Images](#stitching-shanghai-images)
   - [Stitching Street Images](#stitching-street-images)
-  - [Stitching Grail Images](#stitching-grail-images)
+  - [Stitching Grail Images](#stitching-city-images)
 - [Customization](#customization)
 
 
@@ -46,6 +46,51 @@ This project is built using Python’s OpenCV library, utilizing advanced algori
 
 ### FLANN (Fast Library for Approximate Nearest Neighbors)
 **FLANN** is a fast and efficient library used to perform approximate nearest neighbor searches. In this project, FLANN is used to match SIFT descriptors between images. This matching process identifies corresponding points in overlapping image regions, which are crucial for aligning and stitching the images together.
+
+### System Overview and Architecture
+
+```plaintext
++--------------------+        +-------------------------+
+|                    |        |                         |
+|    Input Images    | ---->  |  Feature Extraction     |
+|    (Image Files)   |        |    (SIFT)               |
+|                    |        |                         |
++--------------------+        +-------------------------+
+                                   |
+                                   v
+                           +------------------+
+                           |                  |
+                           | Feature Matching |
+                           |   (FLANN + k-NN) |
+                           |                  |
+                           +------------------+
+                                   |
+                                   v
+                           +------------------+
+                           |                  |
+                           | Homography Calc  |
+                           |      (RANSAC)    |
+                           |                  |
+                           +------------------+
+                                   |
+                                   v
+                           +------------------+
+                           |                  |
+                           | Perspective      |
+                           | Transformation   |
+                           | (Warp & Blend)   |
+                           |                  |
+                           +------------------+
+                                   |
+                                   v
+                           +------------------+
+                           |                  |
+                           | Cropped Panorama |
+                           |    Output Image  |
+                           |                  |
+                           +------------------+
+```
+
 
 ## Installation
 Before using the project, ensure that Python 3.x and the necessary libraries are installed.
